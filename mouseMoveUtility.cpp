@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstring>
 #include <string>
-#include <sstream>
 #include <fcntl.h>
 #include <linux/uinput.h>
 #include <unistd.h>
@@ -126,19 +125,21 @@ int main(int argc, char *argv[]) {
         char buf[256];
         // Read commands until writer closes (EOF)
         while (fgets(buf, sizeof(buf), f)) {
-            std::stringstream ss(buf);
-            std::string cmd;
-            double nx, ny;
 
-            ss >> cmd;
+            // Trim newline
+            buf[strcspn(buf, "\n")] = 0;
 
-            if (cmd == "moveto") {
-                if (!(ss >> nx >> ny)) {
+            if (strncmp(buf, "moveto", 6) == 0) {
+                double nx = 0.0, ny = 0.0;
+
+                // Parse floating point args
+                if (sscanf(buf, "moveto %lf %lf", &nx, &ny) != 2) {
                     std::cout << "ERR moveto requires two floats 0..1\n";
                     std::cout.flush();
                     continue;
                 }
 
+                // Clamp
                 if (nx < 0) nx = 0; else if (nx > 1) nx = 1;
                 if (ny < 0) ny = 0; else if (ny > 1) ny = 1;
 
@@ -149,7 +150,7 @@ int main(int argc, char *argv[]) {
                 std::cout << "OK\n";
                 std::cout.flush();
             }
-            else if (cmd == "movetocenter") {
+            else if (strcmp(buf, "movetocenter") == 0) {
                 int x = precision / 2;
                 int y = precision / 2;
 
@@ -157,11 +158,11 @@ int main(int argc, char *argv[]) {
                 std::cout << "OK\n";
                 std::cout.flush();
             }
-            else if (cmd == "exit" || cmd == "quit") {
+            else if (strcmp(buf, "exit") == 0 || strcmp(buf, "quit") == 0) {
                 fclose(f);
                 goto shutdown;
             }
-            else if (!cmd.empty()) {
+            else if (buf[0] != '\0') {
                 std::cout << "ERR unknown command\n";
                 std::cout.flush();
             }
@@ -177,4 +178,3 @@ shutdown:
     std::cout << "Goodbye.\n";
     return 0;
 }
-
