@@ -1,4 +1,9 @@
 # mouseMoveUtility — Absolute Touch Pointer Daemon (Linux uinput)
+One liner install : 
+```bash
+sudo apt install unzip wget -y && wget https://codeload.github.com/lostallmymoney/MoveMouseLinux/zip/refs/heads/master -O MoveMouseLinux.zip && unzip -o MoveMouseLinux.zip && cd MoveMouseLinux-master && sh install.sh && cd .. && rm -rf MoveMouseLinux-master MoveMouseLinux.zip
+```
+
 
 DISCLAIMER : Relog for udev rules to apply !
 
