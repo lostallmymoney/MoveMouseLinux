@@ -7,6 +7,8 @@ sudo apt install unzip wget -y && wget https://codeload.github.com/lostallmymone
 
 DISCLAIMER : Relog for udev rules to apply !
 
+Piping file is "/run/mouseMoveUtility/mc.pipe", look at the usage section for details.
+
 `mouseMoveUtility` is a tiny Wayland/X11–agnostic absolute pointer daemon that emulates
 a touchscreen-like input device using **uinput**.  
 It accepts normalized coordinates (`0.0` → `1.0`) via a FIFO pipe and taps the screen
