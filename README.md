@@ -1,4 +1,4 @@
-# mouseMoveUtility — Absolute Touch Pointer Daemon (Linux uinput)
+# mouseMoveUtility — Absolute Touch Pointer Daemon SystemCTL Service (Linux uinput)
 One liner install : 
 ```bash
 sudo apt install unzip wget -y && wget https://github.com/lostallmymoney/MoveMouseLinux/archive/refs/heads/main.zip -O MoveMouseLinux.zip && unzip -o MoveMouseLinux.zip && cd MoveMouseLinux-main && sh install.sh && cd .. && rm -rf MoveMouseLinux-main MoveMouseLinux.zip
