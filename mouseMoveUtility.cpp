@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
             // Trim newline
             buf[strcspn(buf, "\n")] = 0;
 
-            if (strncmp(buf, "moveto", 6) == 0) {
+            if (strncmp(buf, "moveto ", 6) == 0) { //space after moveto is important to allow movetocenter 
                 double nx = 0.0, ny = 0.0;
 
                 // Parse floating point args
