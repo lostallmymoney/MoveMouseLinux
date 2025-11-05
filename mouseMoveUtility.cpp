@@ -8,6 +8,7 @@
 #include <cstdlib>
 
 // ============================================================================
+// Trim leading and trailing whitespace
 // CONFIGURATION
 // ============================================================================
 static const int precision = 10000;
@@ -125,47 +126,35 @@ int main(int argc, char *argv[]) {
         char buf[256];
         // Read commands until writer closes (EOF)
         while (fgets(buf, sizeof(buf), f)) {
-
             // Trim newline
             buf[strcspn(buf, "\n")] = 0;
-
-            if (strncmp(buf, "moveto ", 6) == 0) { //space after moveto is important to allow movetocenter 
+            if (strncmp(buf, "movetocenter", 12) == 0) {
+                int x = precision / 2;
+                int y = precision / 2;
+                move_to(fd, x, y, true);
+                std::cout.flush();
+            } else if (strncmp(buf, "moveto", 6) == 0) {
                 double nx = 0.0, ny = 0.0;
-
-                // Parse floating point args
                 if (sscanf(buf, "moveto %lf %lf", &nx, &ny) != 2) {
                     std::cout << "ERR moveto requires two floats 0..1\n";
                     std::cout.flush();
                     continue;
                 }
-
-                // Clamp
                 if (nx < 0) nx = 0; else if (nx > 1) nx = 1;
                 if (ny < 0) ny = 0; else if (ny > 1) ny = 1;
-
                 int x = static_cast<int>(nx * precision);
                 int y = static_cast<int>(ny * precision);
-
                 move_to(fd, x, y, true);
-                std::cout << "OK\n";
                 std::cout.flush();
-            }
-            else if (strcmp(buf, "movetocenter") == 0) {
-                int x = precision / 2;
-                int y = precision / 2;
-
-                move_to(fd, x, y, true);
-                std::cout << "OK\n";
-                std::cout.flush();
-            }
-            else if (strcmp(buf, "exit") == 0 || strcmp(buf, "quit") == 0) {
+            } else if (strcmp(buf, "exit") == 0 || strcmp(buf, "quit") == 0) {
                 fclose(f);
                 goto shutdown;
-            }
-            else if (buf[0] != '\0') {
+            } else if (buf[0] != '\0') {
                 std::cout << "ERR unknown command\n";
                 std::cout.flush();
             }
+
+            // ...existing code...
         }
 
         // Writer closed FIFO — clean up and reopen
