@@ -14,6 +14,9 @@ INSTALL_USER="${USER:-$(id -un)}"
 
 echo "[+] Installing mouseMoveUtility utility (as $INSTALL_USER)"
 
+echo "[+] Stopping and disabling any existing mouseMoveUtility service..."
+sudo systemctl stop mouseMoveUtility.service || true
+sudo systemctl disable mouseMoveUtility.service || true
 # -----------------------------------------------------------------------------
 # 1. Ensure g++ exists (Debian/Ubuntu)
 # -----------------------------------------------------------------------------
@@ -91,6 +94,7 @@ ExecStartPre=/bin/chgrp mouseMoveUtility /run/mouseMoveUtility/mc.pipe
 
 ExecStart=/usr/local/bin/mouseMoveUtility /run/mouseMoveUtility/mc.pipe
 
+User=$INSTALL_USER
 Group=mouseMoveUtility
 Restart=always
 RestartSec=1
