@@ -1,0 +1,15 @@
+[Unit]
+Description=Custom key bindings for the side panel of razer mouses.
+After=graphical.target
+Wants=graphical.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/Naga_Linux/nagaServerCatcher.sh
+Restart=always
+RestartSec=5
+TimeoutStartSec=5
+Group=razerInputGroup
