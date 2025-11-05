@@ -87,12 +87,12 @@ Wants=systemd-udevd.service
 [Service]
 Type=simple
 
-ExecStartPre=/bin/mkdir -p /run/mouseMoveUtility
-ExecStartPre=/bin/rm -f /run/mouseMoveUtility/mc.pipe
-ExecStartPre=/usr/bin/mkfifo -m 660 /run/mouseMoveUtility/mc.pipe
-ExecStartPre=/bin/chgrp mouseMoveUtility /run/mouseMoveUtility/mc.pipe
+ExecStartPre=/bin/mkdir -p /run/user/1000/mouseMoveUtility
+ExecStartPre=/bin/rm -f /run/user/1000/mouseMoveUtility/mc.pipe
+ExecStartPre=/usr/bin/mkfifo -m 660 /run/user/1000/mouseMoveUtility/mc.pipe
+ExecStartPre=/bin/chgrp mouseMoveUtility /run/user/1000/mouseMoveUtility/mc.pipe
 
-ExecStart=/usr/local/bin/mouseMoveUtility /run/mouseMoveUtility/mc.pipe
+ExecStart=/usr/local/bin/mouseMoveUtility /run/user/1000/mouseMoveUtility/mc.pipe
 
 User=$INSTALL_USER
 Group=mouseMoveUtility
