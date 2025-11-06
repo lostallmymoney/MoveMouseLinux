@@ -33,6 +33,9 @@ if ! command -v g++ >/dev/null 2>&1; then
     elif command -v dnf >/dev/null 2>&1; then
         echo "    Installing gcc-c++ (sudo required)..."
         sudo dnf install -y gcc-c++
+    elif command -v zypper >/dev/null 2>&1; then
+        echo "    Installing gcc-c++ (sudo required)..."
+        sudo zypper --non-interactive install gcc-c++
     else
         echo "ERROR: g++/gcc not found; please install manually."
         exit 1
