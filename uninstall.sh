@@ -85,9 +85,9 @@ fi
 # -----------------------------------------------------------------------------
 # 6. Clean leftover runtime directory (if present)
 # -----------------------------------------------------------------------------
-if [ -d /run/user/1000/mouseMoveUtility ]; then
-    echo "[+] Cleaning leftover /run/user/1000/mouseMoveUtility"
-    sudo rm -rf /run/user/1000/mouseMoveUtility || true
+if [ -d /run/mouseMoveUtility ]; then
+    echo "[+] Cleaning leftover /run/mouseMoveUtility"
+    sudo rm -rf /run/mouseMoveUtility || true
 fi
 
 echo

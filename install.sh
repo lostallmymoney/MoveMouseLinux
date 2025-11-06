@@ -17,19 +17,41 @@ echo "[+] Installing mouseMoveUtility utility (as $INSTALL_USER)"
 echo "[+] Stopping and disabling any existing mouseMoveUtility service..."
 sudo systemctl stop mouseMoveUtility.service || true
 sudo systemctl disable mouseMoveUtility.service || true
+
 # -----------------------------------------------------------------------------
-# 1. Ensure g++ exists (Debian/Ubuntu)
+# 1. Dependency and kernel module setup
 # -----------------------------------------------------------------------------
-echo "[+] Ensuring g++ is installed..."
+echo "[+] Checking and installing dependencies (g++/gcc)..."
 if ! command -v g++ >/dev/null 2>&1; then
-    if command -v apt-get >/dev/null 2>&1; then
+    if command -v pacman >/dev/null 2>&1; then
+        echo "    Installing gcc (sudo required)..."
+        sudo pacman -Sy --noconfirm gcc
+    elif command -v apt-get >/dev/null 2>&1; then
         echo "    Installing g++ (sudo required)..."
         sudo apt-get update -y
         sudo apt-get install -y g++
+    elif command -v dnf >/dev/null 2>&1; then
+        echo "    Installing gcc-c++ (sudo required)..."
+        sudo dnf install -y gcc-c++
     else
-        echo "ERROR: g++ not found; please install manually."
+        echo "ERROR: g++/gcc not found; please install manually."
         exit 1
     fi
+fi
+
+echo "[+] Ensuring uinput kernel module is loaded and enabled at boot..."
+if [ ! -e /dev/uinput ]; then
+    echo "    /dev/uinput not present. Will try to load module and enable at boot."
+    if ! grep -q '^uinput$' /etc/modules-load.d/uinput.conf 2>/dev/null; then
+        echo "    Adding uinput to /etc/modules-load.d/uinput.conf for auto-load at boot."
+        echo uinput | sudo tee -a /etc/modules-load.d/uinput.conf >/dev/null
+    else
+        echo "    uinput already set to load at boot."
+    fi
+    echo "    Loading uinput now (sudo required)..."
+    sudo modprobe uinput || true
+else
+    echo "    /dev/uinput is present. No changes to modules-load.d."
 fi
 
 # -----------------------------------------------------------------------------
@@ -41,7 +63,7 @@ if [ ! -f mouseMoveUtility.cpp ]; then
     exit 1
 fi
 
-g++ -Ofast -march=native -flto -DNDEBUG -Wall -pipe -o mouseMoveUtility mouseMoveUtility.cpp
+g++ -O3 -march=native -flto -DNDEBUG -Wall -pipe -std=c++23 -o mouseMoveUtility mouseMoveUtility.cpp
 echo "    Build complete: ./mouseMoveUtility"
 
 # -----------------------------------------------------------------------------
@@ -87,12 +109,12 @@ Wants=systemd-udevd.service
 [Service]
 Type=simple
 
-ExecStartPre=/bin/mkdir -p /run/user/1000/mouseMoveUtility
-ExecStartPre=/bin/rm -f /run/user/1000/mouseMoveUtility/mc.pipe
-ExecStartPre=/usr/bin/mkfifo -m 660 /run/user/1000/mouseMoveUtility/mc.pipe
-ExecStartPre=/bin/chgrp mouseMoveUtility /run/user/1000/mouseMoveUtility/mc.pipe
+ExecStartPre=/bin/mkdir -p /run/mouseMoveUtility
+ExecStartPre=/bin/rm -f /run/mouseMoveUtility/mc.pipe
+ExecStartPre=/usr/bin/mkfifo -m 660 /run/mouseMoveUtility/mc.pipe
+ExecStartPre=/bin/chgrp mouseMoveUtility /run/mouseMoveUtility/mc.pipe
 
-ExecStart=/usr/local/bin/mouseMoveUtility /run/user/1000/mouseMoveUtility/mc.pipe
+ExecStart=/usr/local/bin/mouseMoveUtility /run/mouseMoveUtility/mc.pipe
 
 User=$INSTALL_USER
 Group=mouseMoveUtility
