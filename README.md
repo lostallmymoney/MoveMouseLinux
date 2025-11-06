@@ -7,7 +7,7 @@ sudo apt install unzip wget -y && wget https://github.com/lostallmymoney/MoveMou
 
 DISCLAIMER : Relog for udev rules to apply !
 
-Piping file is "/run/user/1000/mouseMoveUtility/mc.pipe", look at the usage section for details.
+Piping file is "/run/mouseMoveUtility/mc.pipe", look at the usage section for details.
 
 `mouseMoveUtility` is a tiny Wayland/X11–agnostic absolute pointer daemon that emulates
 a touchscreen-like input device using **uinput**.  
@@ -50,9 +50,10 @@ Clone the repository and run the installer as a **regular user**:
 
 ## Usage
 
-Pipe commands into /run/user/1000/mouseMoveUtility/mc.pipe like this:
-echo "movetocenter" > /run/user/1000/mouseMoveUtility/mc.pipe
-echo "moveto 0.1 0.1" > /run/user/1000/mouseMoveUtility/mc.pipe
+
+Pipe commands into /run/mouseMoveUtility/mc.pipe like this:
+echo "movetocenter" > /run/mouseMoveUtility/mc.pipe
+echo "moveto 0.1 0.1" > /run/mouseMoveUtility/mc.pipe
 
 Example in C++:
 #include <fcntl.h>
@@ -60,7 +61,7 @@ Example in C++:
 #include <cstring>
 
 int main() {
-    int fd = open("/run/user/1000/mouseMoveUtility/mc.pipe", O_WRONLY);
+    int fd = open("/run/mouseMoveUtility/mc.pipe", O_WRONLY);
     const char* cmd = "movetocenter\n";
     write(fd, cmd, strlen(cmd));
     close(fd);
