@@ -105,9 +105,14 @@ int main(int argc, char *argv[]) {
 
     const char *fifo_path = argv[1];
 
-    int fd = create_device();
-    if (fd < 0) {
-        return 1;
+
+    int fd = -1;
+    while (fd < 0) {
+        fd = create_device();
+        if (fd < 0) {
+            std::cerr << "[mouseMoveUtility] Could not open /dev/uinput, will retry in 30 seconds...\n";
+            sleep(30);
+        }
     }
 
     std::cout << "mouseMoveUtility daemon ready\n";

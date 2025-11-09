@@ -68,7 +68,7 @@ fi
 if getent group "$GROUP" >/dev/null 2>&1; then
     echo
     printf "Do you want to remove the system group '%s'? [y/N] " "$GROUP"
-    read ans
+    read -r ans
     case "$ans" in
         y|Y|yes|YES)
             sudo groupdel "$GROUP" || true
